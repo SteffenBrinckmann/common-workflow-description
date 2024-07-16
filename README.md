@@ -4,7 +4,7 @@
 Shows how a format could look like that can be used for experiments and simulations.
 
 ## Folders
-- base-folder: here we put some exp. and num. workflows
+- base-folder: here we put some exp. and num. workflows with .py ending
 - procedures: folder with experimental procedures and an index of it. This is like a library of recipes
 - tk_based_lib: a simple TK-inter based lib to execute
 

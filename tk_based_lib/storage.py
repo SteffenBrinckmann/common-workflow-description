@@ -2,7 +2,7 @@
 import re, logging, json, hashlib
 from typing import Union, Any
 from pathlib import Path
-from pyiron_workflow.function import single_value_node
+from pyiron_workflow import Workflow
 from .sample import Sample
 from .tk_inter import window
 
@@ -96,7 +96,7 @@ class Storage():
 
 
 
-@single_value_node()
+@Workflow.wrap.as_function_node("y")
 def step(storage:Storage, sample: Sample, name: str, param: dict[str, Any] = {}):
     """Render in TkInter
 

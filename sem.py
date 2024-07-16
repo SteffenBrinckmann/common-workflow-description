@@ -1,11 +1,11 @@
 # head of workflow: always the same
 from pathlib import Path
-from pyiron_workflow.workflow import Workflow
+from pyiron_workflow import Workflow
 from tk_based_lib.storage import Storage, step
 from tk_based_lib.sample import Sample
 
 wf = Workflow('example_workflow')         #name
-folder = Path(__file__).parent.parent/'procedures'
+folder = Path(__file__).parent/'procedures'
 
 # body of workflow
 sample = Sample('FeAl')
