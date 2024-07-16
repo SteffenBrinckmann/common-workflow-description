@@ -13,7 +13,7 @@ storage=Storage(folder)
 
 wf.step1 = step(storage, sample, 'polish', {})   #define step and link to storage for procedures
 
-wf.step2 = step(storage, sample, 'light microscopy', {}) 
+wf.step2 = step(storage, sample, 'light microscopy', {})
 
 wf.step3 = step(storage, sample, 'sem', {'voltage':'30'})
 

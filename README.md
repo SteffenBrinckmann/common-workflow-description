@@ -4,8 +4,8 @@
 Shows how a format could look like that can be used for experiments and simulations.
 
 ## Folders
+- base-folder: here we put some exp. and num. workflows
 - procedures: folder with experimental procedures and an index of it. This is like a library of recipes
-- workflows: here we put some exp. and num. workflows
 - tk_based_lib: a simple TK-inter based lib to execute
 
 
@@ -31,14 +31,22 @@ Shows how a format could look like that can be used for experiments and simulati
   - workflow stays constant and can be exchanged between different systems
 
 ## How to start program?
+Install and setup conda and start basic example
 ``` bash
-  python3 workflows/sem.py
+git clone git@git.rwth-aachen.de:nfdi-matwerk/ta-wsd/common_workflow_description.git
+cd common_workflow_description/
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh
+eval "$(/home/steffen/.miniforge3/bin/conda shell.bash hook)"
+conda install -c conda-forge pyiron_workflow
+python sem.py
 ```
 
 ## TODO:
 - discuss with Sarath
   - no jupyter (for now) lets do the comparison as direct as possible
   - sem.py is a suggestion for the common example
+  - can we update to the latest version of pyiron-wf?
 - let's have also an numerical example
 - let's have a combined example
 - can we find better names for things: storage, smartSample
@@ -49,4 +57,4 @@ Shows how a format could look like that can be used for experiments and simulati
 - pyiron-workflow 0.9.1 still has sooooo many requirements, incl. mpi-stuff
   - should we have a feature-poor version that has no requriements as part of the tk-based-lib
   - if people need more features: use pyiron
-  
+
