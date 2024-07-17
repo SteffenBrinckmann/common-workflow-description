@@ -1,10 +1,13 @@
 """ Storage for procedures """
-import re, logging, json, hashlib
-from typing import Union, Any
+import hashlib
+import json
+import logging
+import re
+from typing import Union, Any, Optional
 from pathlib import Path
 from pyiron_workflow import Workflow
 from .sample import Sample
-from .tk_inter import window
+from .tk_inter import main_window
 
 class Storage():
     """Storage for procedures"""
@@ -17,9 +20,9 @@ class Storage():
         """
         self.procedures: dict[str, Union[str, Path]] = {}
         if isinstance(procedures, dict):
-            self.addProcedures(procedures)
+            self.add_procedures(procedures)
         if isinstance(procedures, Path):
-            self.addProcedureDirectory(procedures)
+            self.add_procedure_directory(procedures)
         logging.basicConfig(
             filename="workflow.log",
             level=logging.INFO,
@@ -29,7 +32,7 @@ class Storage():
         logging.info("Start workflow")
 
 
-    def addProcedures(self, procedures: dict[str, Union[str, Path]]) -> None:
+    def add_procedures(self, procedures: dict[str, Union[str, Path]]) -> None:
         """Add procedures to local copy
 
         Args:
@@ -41,26 +44,25 @@ class Storage():
                     self.procedures[key] = Path(value)
                     continue
             self.procedures[key] = value
-        return
 
 
-    def addProcedureDirectory(self, path: Path) -> None:
+    def add_procedure_directory(self, path: Path) -> None:
         """Add directory with procedures to local copy
         - index.json file in that directory defines names
 
         Args:
           path (Path): directory with procedure files
         """
-        procedures = json.load(open(path / "index.json", encoding="utf-8"))
+        with open(path / "index.json", encoding="utf-8") as file_input:
+            procedures = json.load(file_input)
         for key, value in procedures.items():
             if (path / value).exists():
                 self.procedures[key] = path / value
                 continue
             self.procedures[key] = value
-        return
 
 
-    def listParameters(self, name: str) -> dict[str, str]:
+    def list_parameters(self, name: str) -> dict[str, str]:
         """list all the parameters in this procedure
 
         Args:
@@ -69,12 +71,12 @@ class Storage():
         Returns:
           dict: key,default pairs of parameters
         """
-        text = self.getText(name)
+        text = self.get_text(name)
         params = re.findall(r"\|\w+\|.*\|", text)
         return {i.split("|")[1]: i.split("|")[2] for i in params}
 
 
-    def getText(self, name: str) -> str:
+    def get_text(self, name: str) -> str:
         """get text of this procedure
 
         Args:
@@ -89,15 +91,15 @@ class Storage():
         if isinstance(procedure, str):
             text = procedure
         else:
-            with open(procedure, encoding="utf-8") as fIn:
-                text = fIn.read()
+            with open(procedure, encoding="utf-8") as file_input:
+                text = file_input.read()
         return text
 
 
 
 
 @Workflow.wrap.as_function_node("y")
-def step(storage:Storage, sample: Sample, name: str, param: dict[str, Any] = {}):
+def step(storage:Storage, sample: Sample, name: str, param: Optional[dict[str, Any]] = None):
     """Render in TkInter
 
     Args:
@@ -110,20 +112,20 @@ def step(storage:Storage, sample: Sample, name: str, param: dict[str, Any] = {})
       str: file name of result
       dict: metadata collected during step
     """
-    text = storage.getText(name)
+    if param is None:
+        param = {}
+    text = storage.get_text(name)
     m = hashlib.sha256()
     m.update(text.encode("utf-8"))
     shasum256 = m.hexdigest()
     if param is not None:
         for key, value in param.items():
-            text = re.sub(f"\|{key}\|.+\|", value, text)
-    text = re.sub("\|\w+\|(.+)\|", r"\1", text)
+            text = re.sub(r"\|{key}\|.+\|", value, text)
+    text = re.sub(r"\|\w+\|(.+)\|", r"\1", text)
     text = f"# Execute the following action with sample: {sample.name}\n{text}"
-    logging.info(
-        f"Start step sample:{sample.name}  procedure-name:{name}  sha256:{shasum256}  "
-        f"parameters:\n{json.dumps(param, indent=2)}"
-    )
-    paramAll = storage.listParameters(name)
-    fileName, metadata = window(text, paramAll, param)
-    logging.info(f"End step ")
-    return [sample, fileName, metadata]
+    logging.info("Start step sample:{%s}  procedure-name:{%s}  sha256:{%s}  parameters:\n{%s}",
+                 sample.name, name, shasum256, json.dumps(param, indent=2))
+    parameter_all = storage.list_parameters(name)
+    file_name, metadata = main_window(text, parameter_all, param)
+    logging.info("End step ")
+    return [sample, file_name, metadata]
