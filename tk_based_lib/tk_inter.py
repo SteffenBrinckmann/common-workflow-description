@@ -109,10 +109,10 @@ def main_window(text, parameter_all, param):
         nonlocal metadata
         metadata = dict(parameter_all)
         for idx, key in enumerate(parameter_all):
-            if key == 'file_name':
+            if key == 'filename':
+                metadata.pop('filename')
                 continue
             metadata[key] = text_fields[idx].get()
-        file_name = "" if "file_name" not in metadata else metadata.pop("file_name")
         logging.info("Save step file-name:%s  metadata:\n%s", file_name,
                      json.dumps(metadata, indent=2))
         window.destroy()
@@ -127,14 +127,13 @@ def main_window(text, parameter_all, param):
     for idx, (key, value) in enumerate(parameter_all.items()):
         name = tk.Label(window, text=key)
         name.grid(**padding, row=1 + idx, column=0)  # type: ignore[arg-type]
-        if key == 'file_name':
+        if key == 'filename':
             file_button = tk.Button(window, text="select file", command=select_file)
             file_button.grid(**padding, row=1 + idx, column=1)
         else:
             text_fields.append(tk.Entry(window))
             text_fields[-1].insert(10, str(value))
             text_fields[-1].grid(**padding, row=1 + idx, column=1)  # type: ignore[arg-type]
-
     button = tk.Button(window, text="done", command=done)
     button.grid(**padding, row=4, column=1)  # type: ignore[arg-type]
     window.mainloop()

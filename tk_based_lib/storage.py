@@ -5,7 +5,8 @@ import logging
 import re
 from typing import Union, Any, Optional
 from pathlib import Path
-from pyiron_workflow import Workflow
+# from pyiron_workflow import Workflow
+from .workflow import Workflow
 from .sample import Sample
 from .tk_inter import main_window
 

@@ -31,31 +31,35 @@ Shows how a format could look like that can be used for experiments and simulati
   - workflow stays constant and can be exchanged between different systems
 
 ## How to start program?
-Install and setup conda and start basic example
+Install and setup conda
 ``` bash
 git clone git@git.rwth-aachen.de:nfdi-matwerk/ta-wsd/common_workflow_description.git
 cd common_workflow_description/
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
+```
+
+Start conda environment, install pyiron, and start workflow
+``` bash
 eval "$(/home/steffen/.miniforge3/bin/conda shell.bash hook)"
 conda install -c conda-forge pyiron_workflow
 python workflows/sem.py
 ```
 
-## TODO:
-- discuss with Sarath
+## TODO: discuss with Sarath
+- This workflow lib
   - no jupyter (for now) lets do the comparison as direct as possible
   - sem.py is a suggestion for the common example
-  - can we update to the latest version of pyiron-wf?
-- how to ensure the order is kept
-- let's have also an numerical example
-- let's have a combined example
-- can we find better names for things: storage, smartSample
-- TK part is not ideal, don't know how to fix easily: one window that gets updated
-- more experimental procedures
-- current version of pyiron workflow is delayed running: define all steps; run them
-  better: run steps immediately
-- pyiron-workflow 0.9.1 still has sooooo many requirements, incl. mpi-stuff
-  - should we have a feature-poor version that has no requriements as part of the tk-based-lib
-  - if people need more features: use pyiron
+- Pyiron workflow
+  - how to ensure the step order is kept
+  - current version of pyiron workflow is delayed running: define all steps; run them
+    better: run steps immediately
+- More work
+  - let's have also an numerical example
+  - let's have a combined example
+  - can we find better names for things: storage
+  - more experimental procedures
+  - pyiron-workflow 0.9.1 still has sooooo many requirements, incl. mpi-stuff
+    - should we have a feature-poor version that has no requriements as part of the tk-based-lib
+    - if people need more features: use pyiron
 
