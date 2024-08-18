@@ -1,24 +1,33 @@
 import functools
 
+#global variable to store output of functions
+data = []
+
 class Wrap():
-    @classmethod
-    def as_function_node(self, label):
+    """ Wrapper class that defines the decorator """
+    def as_function_node(self, _):
+        """ decorator function """
         def decoratorInner(func):
+            """ inner decorator, that is returned """
             @functools.wraps(func)
             def wrapper(self, *args, **kwargs):
+                # wrapper that can access the local variables of the wrapped function
                 out = func(self, *args, **kwargs)
-                print(out,'Steffen')
+                data.append(out)
             return wrapper
         return decoratorInner
 
 
 class Workflow():
-    wrap = Wrap
-    def __init__(self, path) -> None:
-        print(path,"TODO More")
+    """ Boilerplate workflow """
+    wrap = Wrap()
+
+    def __init__(self, name) -> None:
+        print(f'Start boilerplate workflow: {name}')
 
     def run(self):
-        return {'key':'here I have to create more'}
+        """ executed at end to return all the workflow step output """
+        return {'key':data}
 
     def draw(self):
         """ Dummy method to mimic pyiron-workflow"""
@@ -28,8 +37,6 @@ class Workflow():
 
 class Picture():
     """ Dummy picture class that does nothing than create a file that pyiron-workflow also creates """
-    def __init__(self) -> None:
-        pass
     def render(self, filename='', format=''):
         with open(filename, 'w', encoding='utf-8') as fOut:
             fOut.write('Dummy method\n')

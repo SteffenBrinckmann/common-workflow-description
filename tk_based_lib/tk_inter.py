@@ -136,5 +136,5 @@ def main_window(text, parameter_all, param):
             text_fields[-1].grid(**padding, row=1 + idx, column=1)  # type: ignore[arg-type]
     button = tk.Button(window, text="done", command=done)
     button.grid(**padding, row=4, column=1)  # type: ignore[arg-type]
-    window.mainloop()
+    # window.mainloop()
     return file_name, metadata
