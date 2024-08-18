@@ -19,15 +19,18 @@ class Wrap():
 
 
 class Workflow():
-    """ Boilerplate workflow """
+    """ Boilerplate = minimalistic workflow engine"""
     wrap = Wrap()
 
-    def __init__(self, name) -> None:
-        print(f'Start boilerplate workflow: {name}')
+    def __init__(self, _) -> None:
+        pass
 
     def run(self):
         """ executed at end to return all the workflow step output """
-        return {'key':data}
+        res = {}
+        for idx, out in enumerate(data):
+            res[f'step{idx+1}__y'] = out
+        return res
 
     def draw(self):
         """ Dummy method to mimic pyiron-workflow"""

@@ -6,11 +6,13 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from tk_based_lib.storage import Storage, step
 from tk_based_lib.sample import Sample
-#from pyiron_workflow import Workflow
-from tk_based_lib.workflow import Workflow
+try:
+    from pyiron_workflow import Workflow
+except ImportError:
+    from tk_based_lib.workflow import Workflow
 
+# start code
 proceduresLibrary = Path(__file__).parent.parent/'procedures'
-
 wf = Workflow('example_workflow')         # name
 storage=Storage(proceduresLibrary)        # folder or database
 
