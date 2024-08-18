@@ -1,12 +1,14 @@
 # common_workflow_description
+This is a temporary copy of the rwth-gitlab repo: it allows easier communication with external partners.
+
 ## A mockup of a common format to describe experimental and numerical workflows
 
 Shows how a format could look like that can be used for experiments and simulations.
 
 ## Folders
 - workflows: here we put some exp. and num. workflows with .py ending
-- procedures: folder with experimental procedures and an index of it. This is like a library of recipes
-- tk_based_lib: a simple TK-inter based lib to execute
+- procedures: folder with experimental procedures and an index of it. This is like a library of recipes for experimentaliest
+- tk_based_lib: a simple TK-inter based lib
 
 
 ## Advantage for workflow: sem.py
@@ -24,11 +26,16 @@ Shows how a format could look like that can be used for experiments and simulati
   - only addition is variables/substitution which is copied from reStructured text
   - that addition is extended by the |variable|default| nomenclature, see "sem.md"
 - has no python requirements
-- creates log file
+- if pyiron-workflow is not found: uses minimalistic workflow engine
+  - uses the same nomenclature as pyiron-workflow
+  - not as feature-rich: drawing, scheduling, ...
+  - has no dependency and just-runs code
+- creates log file of the experiments
 - creates shasum of procedures so one knows if the underlying procedure changed
 - shows message to user and asks for input
 - other people can inherit/extend the functionality of storage and sample based on their software (PASTA, pyiron)
   - workflow stays constant and can be exchanged between different systems
+
 
 ## How to start program?
 Install and setup conda
@@ -46,20 +53,15 @@ conda install -c conda-forge pyiron_workflow
 python workflows/sem.py
 ```
 
-## TODO: discuss with Sarath
-- This workflow lib
-  - no jupyter (for now) lets do the comparison as direct as possible
-  - sem.py is a suggestion for the common example
+## TODO: Next steps
+- See what pyiron-workflow people think?
 - Pyiron workflow
   - how to ensure the step order is kept
-  - current version of pyiron workflow is delayed running: define all steps; run them
+    current version of pyiron workflow is delayed running: define all steps; run them
     better: run steps immediately
+  - reduce the verbosity of the logging
 - More work
   - let's have also an numerical example
   - let's have a combined example
-  - can we find better names for things: storage
   - more experimental procedures
-  - pyiron-workflow 0.9.1 still has sooooo many requirements, incl. mpi-stuff
-    - should we have a feature-poor version that has no requriements as part of the tk-based-lib
-    - if people need more features: use pyiron
 
