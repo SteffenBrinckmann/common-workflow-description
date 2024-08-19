@@ -22,7 +22,7 @@ class Workflow():
     """ Boilerplate = minimalistic workflow engine"""
     wrap = Wrap()
 
-    def __init__(self, _) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         pass
 
     def run(self):
