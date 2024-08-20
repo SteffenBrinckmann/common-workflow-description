@@ -38,7 +38,7 @@ class Workflow():
     wrap = Wrap()
 
     def __init__(self, *args, **kwargs) -> None:
-        pass
+        self.outputs = {}
 
     def run(self):
         """ executed at end to return all the workflow step output """
@@ -51,6 +51,11 @@ class Workflow():
         """ Dummy method to mimic pyiron-workflow"""
         obj = Picture()
         return obj
+
+    def __setattr__(self, key, value):
+        if isinstance(value, RShiftableOutput):
+            self.outputs[key] = value.value
+        super().__setattr__(key, value)
 
 
 class Picture():
