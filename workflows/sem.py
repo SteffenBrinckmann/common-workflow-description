@@ -15,11 +15,11 @@ storage=Storage(proceduresLibrary)                                  # folder or 
 # body of workflow: this changes
 sample = Sample('FeAl')
 
-wf.step1 = step(storage, sample, 'polish', {})   #define step and link to storage for procedures
+wf.step1 = step(storage, sample, 'polish', {}, run_after_init=True)   #define step and link to storage for procedures
 
-wf.step2 = step(storage, sample, 'light microscopy', {})
+wf.step2 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
 
-wf.step3 = step(storage, sample, 'sem', {'voltage':'30'})
+wf.step3 = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
 
 try:
     wf.step1 >> wf.step2 >> wf.step3

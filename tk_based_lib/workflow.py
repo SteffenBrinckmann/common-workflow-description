@@ -1,4 +1,5 @@
 import functools
+from inspect import signature
 
 #global variable to store output of functions
 data = []
@@ -11,6 +12,9 @@ class Wrap():
             """ inner decorator, that is returned """
             @functools.wraps(func)
             def wrapper(self, *args, **kwargs):
+                wrapped_params = signature(func).parameters
+                kwargs = {k: v for k, v in kwargs.items() if k in wrapped_params}
+
                 # wrapper that can access the local variables of the wrapped function
                 out = func(self, *args, **kwargs)
                 data.append(out)
