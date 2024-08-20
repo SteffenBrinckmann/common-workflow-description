@@ -22,4 +22,4 @@ wf.step2 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
 wf.step3 = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
 
 # footer, always the same
-print(wf.output)  #Exception
+print(wf.outputs.to_value_dict())  #Exception
