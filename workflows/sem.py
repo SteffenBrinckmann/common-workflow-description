@@ -1,5 +1,4 @@
 # head of workflow: always the same
-import os
 from pathlib import Path
 from tk_based_lib.storage import Storage, step
 from tk_based_lib.sample import Sample
@@ -33,5 +32,4 @@ out = wf.run()
 print('Output:\n  ','\n   '.join([str(i) for i in list(out.values())]))
 
 # wf.draw().render(view=True)               #plot to screen (creating pdf->viewer)
-wf.draw().render(filename="io_demo", format="png") #plot to file
-os.unlink('io_demo')
+wf.draw().render(filename="io_demo", format="png", cleanup=True) #plot to file
