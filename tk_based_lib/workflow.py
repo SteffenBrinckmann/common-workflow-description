@@ -32,13 +32,17 @@ class Wrap():
             return wrapper
         return decoratorInner
 
+class _LikePyironWorkflowOutputs(dict):
+    def to_value_dict(self):
+        return self
+
 
 class Workflow():
     """ Boilerplate = minimalistic workflow engine"""
     wrap = Wrap()
 
     def __init__(self, *args, **kwargs) -> None:
-        self.outputs = {}
+        self.outputs = _LikePyironWorkflowOutputs()
 
     def run(self):
         """ executed at end to return all the workflow step output """

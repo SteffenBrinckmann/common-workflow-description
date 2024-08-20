@@ -3,7 +3,6 @@ from pathlib import Path
 from tk_based_lib.storage import Storage, step
 from tk_based_lib.sample import Sample
 try:
-    raise ImportError
     from pyiron_workflow import Workflow
 except ImportError:
     from tk_based_lib.workflow import Workflow
@@ -26,8 +25,7 @@ wf.step1 >> wf.step2 >> wf.step3
 wf.starting_nodes = [wf.step1]
 
 # footer, always the same
-out = wf.run()
-print('Output:\n  ','\n   '.join([str(i) for i in list(out.values())]))
+print('Output:\n  ','\n   '.join([f"{k}: {v}" for k, v in list(wf.outputs.to_value_dict().items())]))
 
 # wf.draw().render(view=True)               #plot to screen (creating pdf->viewer)
 wf.draw().render(filename="io_demo", format="png", cleanup=True) #plot to file
