@@ -40,6 +40,6 @@ class Workflow():
 
 class Picture():
     """ Dummy picture class that does nothing than create a file that pyiron-workflow also creates """
-    def render(self, filename='', format=''):
+    def render(self, filename='', format='', **kwargs):
         with open(filename, 'w', encoding='utf-8') as fOut:
             fOut.write('Dummy method\n')
