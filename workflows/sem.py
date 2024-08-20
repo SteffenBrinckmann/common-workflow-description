@@ -3,6 +3,7 @@ from pathlib import Path
 from tk_based_lib.storage import Storage, step
 from tk_based_lib.sample import Sample
 try:
+    raise ImportError
     from pyiron_workflow import Workflow
 except ImportError:
     from tk_based_lib.workflow import Workflow
@@ -21,10 +22,7 @@ wf.step2 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
 
 wf.step3 = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
 
-try:
-    wf.step1 >> wf.step2 >> wf.step3
-except:
-    pass
+wf.step1 >> wf.step2 >> wf.step3
 wf.starting_nodes = [wf.step1]
 
 # footer, always the same

@@ -4,6 +4,16 @@ from inspect import signature
 #global variable to store output of functions
 data = []
 
+
+class RShiftableOutput:
+    def __init__(self, value):
+        self.value = value
+
+    def __rshift__(self, other):
+        print(f"{self} ({id(self)}) ignoring rshift to {other} ({id(other)})")
+        return other
+
+
 class Wrap():
     """ Wrapper class that defines the decorator """
     def as_function_node(self, _):
@@ -18,6 +28,7 @@ class Wrap():
                 # wrapper that can access the local variables of the wrapped function
                 out = func(self, *args, **kwargs)
                 data.append(out)
+                return RShiftableOutput(out)
             return wrapper
         return decoratorInner
 
