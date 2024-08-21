@@ -124,7 +124,7 @@ def step(storage:Storage, sample: Sample, name: str, param: Optional[dict[str, A
     m.update(text.encode("utf-8"))
     shasum256 = m.hexdigest()
     if param is not None:
-        for key, value in param.items():
+        for value in param.values():
             text = re.sub(r"\|{key}\|.+\|", value, text)
     text = re.sub(r"\|\w+\|(.+)\|", r"\1", text)
     text = f"# Execute the following action with sample: {sample.name}\n{text}"

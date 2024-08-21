@@ -26,6 +26,6 @@ wf.starting_nodes = [wf.step1]
 
 # footer, always the same
 print('Output:\n  ','\n   '.join([f"{k}: {v}" for k, v in list(wf.outputs.to_value_dict().items())]))
-
-# wf.draw().render(view=True)               #plot to screen (creating pdf->viewer)
 wf.draw().render(filename="io_demo", format="png", cleanup=True) #plot to file
+
+# {"type":"common-workflow-description", "version":1.0, "shasum":"d5d8342b266851e28919e69039918d2c2a9ca4f2"}

@@ -1,40 +1,38 @@
+""" Minimalistic workflow """
 import functools
 from inspect import signature
 
-#global variable to store output of functions
-data = []
-
-
 class RShiftableOutput:
+    """ Output of the wrapper / decorator function """
     def __init__(self, value):
         self.value = value
 
     def __rshift__(self, other):
-        print(f"{self} ({id(self)}) ignoring rshift to {other} ({id(other)})")
         return other
+
+
+class WorkflowOutputs(dict):
+    """ Output of the entire workflow """
+    def to_value_dict(self):
+        """ return workflow output as dictionary """
+        return self
 
 
 class Wrap():
     """ Wrapper class that defines the decorator """
     def as_function_node(self, _):
         """ decorator function """
-        def decoratorInner(func):
+        def decorator_inner(func):
             """ inner decorator, that is returned """
             @functools.wraps(func)
             def wrapper(self, *args, **kwargs):
                 wrapped_params = signature(func).parameters
                 kwargs = {k: v for k, v in kwargs.items() if k in wrapped_params}
-
                 # wrapper that can access the local variables of the wrapped function
                 out = func(self, *args, **kwargs)
-                data.append(out)
                 return RShiftableOutput(out)
             return wrapper
-        return decoratorInner
-
-class _LikePyironWorkflowOutputs(dict):
-    def to_value_dict(self):
-        return self
+        return decorator_inner
 
 
 class Workflow():
@@ -42,14 +40,7 @@ class Workflow():
     wrap = Wrap()
 
     def __init__(self, *args, **kwargs) -> None:
-        self.outputs = _LikePyironWorkflowOutputs()
-
-    def run(self):
-        """ executed at end to return all the workflow step output """
-        res = {}
-        for idx, out in enumerate(data):
-            res[f'step{idx+1}__y'] = out
-        return res
+        self.outputs = WorkflowOutputs()
 
     def draw(self):
         """ Dummy method to mimic pyiron-workflow"""
@@ -63,7 +54,6 @@ class Workflow():
 
 
 class Picture():
-    """ Dummy picture class that does nothing than create a file that pyiron-workflow also creates """
-    def render(self, filename='', format='', **kwargs):
-        with open(filename, 'w', encoding='utf-8') as fOut:
-            fOut.write('Dummy method\n')
+    """ Dummy picture class that does nothing """
+    def render(self, *args, **kwargs):
+        """ render the workflow as a picture """
