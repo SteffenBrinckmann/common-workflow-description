@@ -1,7 +1,8 @@
 {
-  "polish": "Put sample on disc and polish",
-  "sem": "sem.md",
-  "light microscopy": "lightmicroscopy.md",
+  "metallography":    "Metalurgraphy.md",
+  "light microscopy": "OlympusOLS4000_Confocal_Microscope.md",
+  "tensile test":     "Doli_Tensile_Test.md",
+  "sem":              "ZeissAuriga_SEM.md",
   "microindentation": "FischerScope_Microindentation.md",
-  "confocal microscope": "OlympusOLS4000_Confocal_Microscope.md"
+  "nanoindentation":  "KLAG220X_Nanoindentation.md"
 }

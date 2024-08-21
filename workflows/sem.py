@@ -9,19 +9,25 @@ except ImportError:
 
 # start code
 proceduresLibrary = Path(__file__).parent.parent/'procedures'
-wf = Workflow('example_workflow', automate_execution=False)         # name
+wf = Workflow('Sandia Fracture Challenge 3', automate_execution=False)         # name
 storage=Storage(proceduresLibrary)                                  # folder or database
 
 # body of workflow: this changes
-sample = Sample('FeAl')
+sample = Sample('AM_NA_05')
 
 wf.step1 = step(storage, sample, 'polish', {}, run_after_init=True)   #define step and link to storage for procedures
 
 wf.step2 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
 
-wf.step3 = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
+wf.step3 = step(storage, sample, 'tensile test', {}, run_after_init=True)
 
-wf.step1 >> wf.step2 >> wf.step3
+wf.step4 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
+
+wf.step5a = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
+
+wf.step5b = step(storage, sample, 'sem', {'voltage':'30'}, run_after_init=True)
+
+wf.step1 >> wf.step2 >> wf.step3 >> wf.step4 >> wf.step5a >> wf.step5b
 wf.starting_nodes = [wf.step1]
 
 # footer, always the same
