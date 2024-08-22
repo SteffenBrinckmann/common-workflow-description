@@ -54,14 +54,6 @@ python workflows/sem.py
 ```
 
 ## TODO: Next steps
-- See what pyiron-workflow people think?
-- Pyiron workflow
-  - how to ensure the step order is kept
-    current version of pyiron workflow is delayed running: define all steps; run them
-    better: run steps immediately
-  - reduce the verbosity of the logging
-- More work
-  - let's have also an numerical example
-  - let's have a combined example
-  - more experimental procedures
+- let's have a combined example
+- more experimental procedures
 

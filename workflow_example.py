@@ -1,21 +1,20 @@
 # head of workflow: always the same
-from pathlib import Path
-from tk_based_lib.storage import Storage, step
-from tk_based_lib.sample import Sample
+from urllib.parse import urlparse
+from common_workflow_description import Storage, Sample, step
 try:
     from pyiron_workflow import Workflow
 except ImportError:
-    from tk_based_lib.workflow import Workflow
+    from common_workflow_description import Workflow
 
 # start code
-proceduresLibrary = Path(__file__).parent.parent/'procedures'
 wf = Workflow('Sandia Fracture Challenge 3', automate_execution=False)         # name
-storage=Storage(proceduresLibrary)                                  # folder or database
+proceduresLibrary = urlparse('https://raw.githubusercontent.com/SteffenBrinckmann/common-workflow-description_Procedures/main')
+storage=Storage(proceduresLibrary)                                             # folder of database
 
 # body of workflow: this changes
 sample = Sample('AM_NA_05')
 
-wf.step1 = step(storage, sample, 'polish', {}, run_after_init=True)   #define step and link to storage for procedures
+wf.step1 = step(storage, sample, 'metallography', {}, run_after_init=True)   #define step and link to storage for procedures
 
 wf.step2 = step(storage, sample, 'light microscopy', {}, run_after_init=True)
 

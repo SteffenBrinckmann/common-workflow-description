@@ -1,8 +1,0 @@
-{
-  "metallography":    "Metalurgraphy.md",
-  "light microscopy": "OlympusOLS4000_Confocal_Microscope.md",
-  "tensile test":     "Doli_Tensile_Test.md",
-  "sem":              "ZeissAuriga_SEM.md",
-  "microindentation": "FischerScope_Microindentation.md",
-  "nanoindentation":  "KLAG220X_Nanoindentation.md"
-}
