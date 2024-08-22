@@ -7,7 +7,7 @@ try:
 except:
     from common_workflow_description import Workflow
 
-@Workflow.wrap.as_function_node("y")
+@Workflow.wrap.as_function_node()
 def plot_curves(fileName, xLabel, yLabel):
     """
     """
@@ -27,7 +27,7 @@ def plot_curves(fileName, xLabel, yLabel):
     plt.ylabel(f'{yLabel} [{df[yLabel].iloc[0]}]')
     plt.show()
 
-@Workflow.wrap.as_function_node("y")
+@Workflow.wrap.as_function_node()
 def calc_YoungsModulus(fileName, xLabel, yLabel):
     """
     """
