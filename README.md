@@ -54,6 +54,7 @@ python workflows/sem.py
 ```
 
 ## TODO: Next steps
-- let's have a combined example
-- more experimental procedures
 
+Next version
+- Allow for more parameters per line
+- Allow for multiple files uploaded
