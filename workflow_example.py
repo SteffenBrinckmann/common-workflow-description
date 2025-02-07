@@ -22,7 +22,6 @@ wf.step4 = step(storage, sample, 'light microscopy', {}, autorun=True)
 wf.step5a = step(storage, sample, 'sem', {'voltage':'30'}, autorun=True)
 wf.step5b = step(storage, sample, 'sem', {'voltage':'30'}, autorun=True)
 
-#tensile_test_file_name = [v  for k,v in list(wf.outputs.to_value_dict().items()) if 'step3' in k][0][1]
 wf.step6 = plot_curves(wf.step3.outputs.y[1], 'Strain (Gauge0)', 'Engr. Stress')
 wf.step7 = calc_YoungsModulus(wf.step3.outputs.y[1], 'Strain (Gauge0)', 'Engr. Stress')
 

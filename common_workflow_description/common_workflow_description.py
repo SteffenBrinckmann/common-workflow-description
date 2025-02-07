@@ -20,10 +20,14 @@ try:
     from pyiron_workflow import Workflow
     print('Started pyiron workflow engine')
 except ImportError:
+    class Output:
+        def __init__(self,value):
+            self.y = value
+
     class RShiftableOutput:
         """ Output of the wrapper / decorator function """
         def __init__(self, value):
-            self.value = value
+            self.outputs = Output(value)
 
         def __rshift__(self, other):
             return other
@@ -33,12 +37,12 @@ except ImportError:
         """ Output of the entire workflow """
         def to_value_dict(self):
             """ return workflow output as dictionary """
-            return self
+            return {k:v.y for k,v in self.items()}
 
 
     class Wrap():
         """ Wrapper class that defines the decorator """
-        def as_function_node(self, _):
+        def as_function_node(self, _=None):
             """ decorator function """
             def decorator_inner(func):
                 """ inner decorator, that is returned """
@@ -56,6 +60,7 @@ except ImportError:
     class Workflow():
         """ Boilerplate = minimalistic workflow engine"""
         wrap = Wrap()
+        engine = "Minimalistic"
 
         def __init__(self, *args, **kwargs) -> None:
             self.outputs = WorkflowOutputs()
@@ -67,7 +72,7 @@ except ImportError:
 
         def __setattr__(self, key, value):
             if isinstance(value, RShiftableOutput):
-                self.outputs[key] = value.value
+                self.outputs[key] = value.outputs
             super().__setattr__(key, value)
 
 

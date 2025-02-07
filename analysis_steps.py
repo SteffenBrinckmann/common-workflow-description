@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
-
+import tkinter as tk
 try:
     from pyiron_workflow import Workflow
 except:
@@ -10,8 +10,8 @@ except:
 
 @Workflow.wrap.as_function_node()
 def plot_curves(fileName, xLabel, yLabel):
-    """
-    """
+    """ Plot the curves """
+    # print('Engine|', Workflow.engine, '|')
     root = tk.Tk()
     file = pd.ExcelFile(fileName)
     for idx, sheet in enumerate(file.sheet_names):
@@ -31,10 +31,10 @@ def plot_curves(fileName, xLabel, yLabel):
     root.mainloop()
     return 1
 
+
 @Workflow.wrap.as_function_node()
 def calc_YoungsModulus(fileName, xLabel, yLabel):
-    """
-    """
+    """ Calculate Young's modulus """
     file = pd.ExcelFile(fileName)
     youngsModulii = {}
     for sheet in file.sheet_names:
@@ -51,6 +51,3 @@ def calc_YoungsModulus(fileName, xLabel, yLabel):
         youngsModulii[sheet] = fit[0]/1000.  #to GPa
     Es = np.array(list(youngsModulii.values()))
     print(f"Young's modulus in GPa: average={round(np.mean(Es),2)} std-dev={round(np.std(Es),2)}")
-
-# plot_curves('... NotchedTensileOverallxlsx.xlsx', 'average', 'Axial Aux Load')
-# plot_curves('... LongitundinalTensileOverall.xlsx', 'Strain (Gauge0)', 'Engr. Stress')
