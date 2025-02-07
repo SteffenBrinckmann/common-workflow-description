@@ -7,6 +7,7 @@ Part of the NFDI-Matwerk and the Task area Workflow and software development
 Authors: Steffen Brinckmann, Liam Huber, Sarath Menon
 """
 import hashlib, json, logging, re, functools
+from dataclasses import dataclass
 from inspect import signature
 from typing import Union, Any, Optional
 from pathlib import Path
@@ -82,7 +83,6 @@ except ImportError:
             """ render the workflow as a picture """
         print('Started minimalistic workflow engine')
 #### END of minimalistic workflow ####
-
 
 class Storage():
     """Storage for procedures"""
@@ -197,22 +197,14 @@ class Storage():
         return text
 
 
+@dataclass
 class Sample:
     """ Sample with a name """
-    def __init__(self, name: str) -> None:
-        """Sample with a name: most basic sample
-
-        Args:
-          name (str): human readable name of sample
-        """
-        self.name = name
+    name: str
 
     def __repr__(self) -> str:
-        return f'Name: {self.name}'
+        return f'sample: {self.name}'
 
-    def print(self) -> None:
-        """ Print sample name to screen """
-        print(f'Name: {self.name}')
 
 
 class RichText(tk.Text):
