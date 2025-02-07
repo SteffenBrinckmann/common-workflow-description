@@ -2,15 +2,17 @@ import pandas as pd
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+
 try:
     from pyiron_workflow import Workflow
 except:
-    from common_workflow_description import Workflow
+    from common_workflow_description.common_workflow_description import Workflow
 
 @Workflow.wrap.as_function_node()
 def plot_curves(fileName, xLabel, yLabel):
     """
     """
+    root = tk.Tk()
     file = pd.ExcelFile(fileName)
     for idx, sheet in enumerate(file.sheet_names):
         if sheet in ('Measurements'):
@@ -26,6 +28,8 @@ def plot_curves(fileName, xLabel, yLabel):
     plt.xlabel(f'{xLabel} [{df[xLabel].iloc[0]}]')
     plt.ylabel(f'{yLabel} [{df[yLabel].iloc[0]}]')
     plt.show()
+    root.mainloop()
+    return 1
 
 @Workflow.wrap.as_function_node()
 def calc_YoungsModulus(fileName, xLabel, yLabel):
