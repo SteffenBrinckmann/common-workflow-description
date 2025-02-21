@@ -52,10 +52,3 @@ eval "$(/home/steffen/.miniforge3/bin/conda shell.bash hook)"
 conda install -c conda-forge pyiron_workflow
 python workflow_example.py
 ```
-## Misc notes
-- S.Stier uses "sample.polish" notation
-
-## TODO: Next steps
-- Data classes
-- Allow for more parameters per line
-- Allow for multiple files uploaded

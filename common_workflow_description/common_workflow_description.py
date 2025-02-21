@@ -6,8 +6,12 @@ Part of the NFDI-Matwerk and the Task area Workflow and software development
 
 Authors: Steffen Brinckmann, Liam Huber, Sarath Menon
 """
-import hashlib, json, logging, re, functools
-from dataclasses import dataclass
+import functools
+import hashlib
+import json
+import logging
+import re
+from dataclasses import dataclass, field
 from inspect import signature
 from typing import Union, Any, Optional
 from pathlib import Path
@@ -22,6 +26,7 @@ try:
     print('Started pyiron workflow engine')
 except ImportError:
     class Output:
+        """ Generic output that is wrapped """
         def __init__(self,value):
             self.y = value
 
@@ -141,19 +146,19 @@ class Storage():
             self.procedures[key] = value
 
 
-    def add_remote_procedure_directory(self, path: ParseResult) -> None:
+    def add_remote_procedure_directory(self, path_url: ParseResult) -> None:
         """Add remote directory with procedures
 
         Args:
           path (Path): directory with procedure files
         """
-        path = urlunparse(path)
+        path = urlunparse(path_url)
         path += '' if path.endswith('/') else '/'
         index_path = path + 'index.json'
-        procedures = json.loads(urlopen(index_path).read())
+        with urlopen(index_path) as resource:
+            procedures = json.loads(resource.read())
         for key, rel_path in procedures.items():
             self.procedures[key] = urlparse(path + rel_path)
-        # print(json.dumps(self.procedures))
 
 
     def list_parameters(self, name: str) -> dict[str, str]:
@@ -189,7 +194,8 @@ class Storage():
                 text = file_input.read()
         elif isinstance(procedure, ParseResult):
             try:
-                text = urlopen(urlunparse(procedure)).read().decode()
+                with urlopen(urlunparse(procedure)) as resource:
+                    text = resource.read().decode()
             except HTTPError:
                 print(f'IRI not found: {urlunparse(procedure)}')
         else:
@@ -285,69 +291,83 @@ class RichText(tk.Text):
                 self.insert_text(f"{line[:self.text_width]}\n", style)
 
 
-def main_window(text, parameter_all, param):
-    """ Main window
+@dataclass
+class DataStore:
+    """ Exchange data entered by user """
+    file_name: str = ''
+    metadata: dict = field(default_factory=dict)
 
-    Args:
-      text (str): text in the text area
-      parameter_all (dict): all parameters
-      param (dict): specific parameter
 
-    Returns:
-      tuple of file name, parameter
-    """
-    window = tk.Tk()
-    window.geometry("500x750")  # set starting size of window
-    window.title('Common workflow description')
-    window.maxsize(1000, 1200)  # width x height
-    widget = RichText(window, width=60, height=30)
-    widget.parse_markdown(text)
-    widget.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
-    # question fields below
-    padding = {"ipadx": 10, "ipady": 10, "padx": 5, "pady": 5, "sticky": "ew"}
-    text_fields = []
-    parameter_all |= param
-    file_name = ''
-    metadata = {}
+class MainWindow():
+    """ Main window"""
+    def __init__(self, text:str, parameter_all:dict[str,str], param:dict[str,str],
+                 output:DataStore):
+        """
+        Args:
+            text (str): text in the text area
+            parameter_all (dict): all parameters
+            param (dict): specific parameter
+            output (DataStore): store output data for consumption
 
-    def done():
-        nonlocal metadata
-        metadata = dict(parameter_all)
-        for idx, key in enumerate(parameter_all):
+        Returns:
+            tuple of file name, parameter
+        """
+        # parameter
+        self.text_fields = []
+        self.parameter_all = parameter_all | param
+        self.file_name = ''
+        self.metadata: dict[str,str] = {}
+        self.output = output
+        # gui
+        self.window = tk.Tk()
+        self.window.geometry("500x750")  # set starting size of window
+        self.window.title('Common workflow description')
+        self.window.maxsize(1000, 1200)  # width x height
+        widget = RichText(self.window, width=60, height=30)
+        widget.parse_markdown(text)
+        widget.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
+        # question fields
+        for idx, (key, value) in enumerate(parameter_all.items()):
+            name = tk.Label(self.window, text=key)
+            name.grid(row=1 + idx, column=0, ipadx=10, ipady=10, padx=5, pady=5,
+                                 sticky='ew')
             if key == 'filename':
-                metadata.pop('filename')
-                continue
-            metadata[key] = text_fields[idx].get()
-        logging.info("Save step file-name:%s  metadata:\n%s", file_name,
-                     json.dumps(metadata, indent=2))
-        window.destroy()
-        return file_name, metadata
+                file_button = tk.Button(self.window, text="select file", command=self.select_file)
+                file_button.grid(row=1 + idx, column=1, ipadx=10, ipady=10, padx=5, pady=5,
+                                 sticky='ew')
+            else:
+                self.text_fields.append(tk.Entry(self.window))
+                self.text_fields[-1].insert(10, str(value))
+                self.text_fields[-1].grid(row=1+idx, column=1, ipadx=10, ipady=10, padx=5, pady=5,
+                                 sticky='ew')
+        button = tk.Button(self.window, text="done", command=self.done)
+        button.grid(row=4, column=1, ipadx=10, ipady=10, padx=5, pady=5,
+                                 sticky='ew')
+        self.window.mainloop()
 
-    def select_file():
+    def done(self):
+        """Action after user clicks done button """
+        self.output.metadata = dict(self.parameter_all)
+        for idx, key in enumerate(self.parameter_all):
+            if key == 'filename':
+                self.output.metadata.pop('filename')
+                continue
+            self.output.metadata[key] = self.text_fields[idx].get()
+        logging.info("Save step file-name:%s  metadata:\n%s", self.output.file_name,
+                    json.dumps(self.output.metadata, indent=2))
+        self.window.destroy()
+
+    def select_file(self):
+        """Action after user clicks to select a file"""
         reply = filedialog.askopenfilename()
         if reply is not None:
-            nonlocal file_name
-            file_name = reply
+            self.output.file_name = reply
 
-    for idx, (key, value) in enumerate(parameter_all.items()):
-        name = tk.Label(window, text=key)
-        name.grid(**padding, row=1 + idx, column=0)  # type: ignore[arg-type]
-        if key == 'filename':
-            file_button = tk.Button(window, text="select file", command=select_file)
-            file_button.grid(**padding, row=1 + idx, column=1)
-        else:
-            text_fields.append(tk.Entry(window))
-            text_fields[-1].insert(10, str(value))
-            text_fields[-1].grid(**padding, row=1 + idx, column=1)  # type: ignore[arg-type]
-    button = tk.Button(window, text="done", command=done)
-    button.grid(**padding, row=4, column=1)  # type: ignore[arg-type]
-    window.mainloop()
-    return file_name, metadata
 
 
 @Workflow.wrap.as_function_node("y")
 def step(storage:Storage, sample: Sample, name: str, param: Optional[dict[str, Any]] = None):
-    """Render in TkInter
+    """Render in TkInter window
 
     Args:
       sample (Sample): sample to do step on
@@ -373,8 +393,7 @@ def step(storage:Storage, sample: Sample, name: str, param: Optional[dict[str, A
     logging.info("Start step sample:{%s}  procedure-name:{%s}  sha256:{%s}  parameters:\n{%s}",
                  sample.name, name, shasum256, json.dumps(param, indent=2))
     parameter_all = storage.list_parameters(name)
-    file_name, metadata = main_window(text, parameter_all, param)
+    output = DataStore()
+    MainWindow(text, parameter_all, param, output)
     logging.info("End step ")
-    return [sample, file_name, metadata]
-
-
+    return [sample, output.file_name, output.metadata]
